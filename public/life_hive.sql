@@ -162,6 +162,65 @@ CREATE INDEX IF NOT EXISTS idx_orders_region     ON public.orders(region);
 CREATE INDEX IF NOT EXISTS idx_orders_created_at ON public.orders(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_orders_review     ON public.orders(admin_review_status) WHERE admin_review_status = 'pending';
 
+-- ----------------------------------------------------------
+-- 2b. ORDERS STATUS CHECK CONSTRAINT — update to allow all 22 new statuses.
+-- The original WheelDeelz migration created a CHECK constraint that only
+-- allowed ~5 statuses (pending/confirmed/processing/shipped/delivered/cancelled).
+-- We need to drop it and recreate with all 22 Life Hive statuses, otherwise
+-- inserting an order with status='payment_processing' fails with:
+--   ERROR: new row for relation "orders" violates check constraint "orders_status_check"
+-- ----------------------------------------------------------
+-- Drop any existing status check constraint (try multiple common names)
+ALTER TABLE public.orders DROP CONSTRAINT IF EXISTS orders_status_check;
+ALTER TABLE public.orders DROP CONSTRAINT IF EXISTS orders_status_check_constraint;
+ALTER TABLE public.orders DROP CONSTRAINT IF EXISTS status_check;
+ALTER TABLE public.orders DROP CONSTRAINT IF EXISTS orders_status_type_check;
+
+-- Find and drop any remaining CHECK constraint on the status column,
+-- regardless of its name. Uses a DO block to inspect pg_constraints.
+DO $$
+DECLARE
+  constraint_name TEXT;
+BEGIN
+  SELECT con.conname INTO constraint_name
+    FROM pg_constraint con
+    JOIN pg_class rel ON rel.oid = con.conrelid
+    JOIN pg_namespace nsp ON nsp.oid = connamespace
+    JOIN pg_attribute att ON att.attrelid = rel.oid AND att.attnum = ANY(con.conkey)
+   WHERE nsp.nspname = 'public'
+     AND rel.relname = 'orders'
+     AND att.attname = 'status'
+     AND con.contype = 'c';  -- 'c' = CHECK constraint
+
+  IF constraint_name IS NOT NULL AND constraint_name NOT IN (
+    'orders_status_check', 'orders_status_check_constraint',
+    'status_check', 'orders_status_type_check'
+  ) THEN
+    EXECUTE format('ALTER TABLE public.orders DROP CONSTRAINT %I', constraint_name);
+    RAISE NOTICE 'Dropped unknown status check constraint: %', constraint_name;
+  END IF;
+END $$;
+
+-- Recreate the check constraint with all 22 Life Hive statuses.
+-- This matches ORDER_STAGES in src/lib/catalog.ts exactly.
+ALTER TABLE public.orders
+  ADD CONSTRAINT orders_status_check
+  CHECK (status IN (
+    -- Payment & verification
+    'pending', 'payment_processing', 'otp_required', 'otp_verified',
+    'confirmed', 'review_declined', 'fraud_check',
+    -- Fulfillment
+    'processing', 'quality_check', 'packing', 'ready_to_ship',
+    -- Shipping
+    'shipped', 'in_transit', 'out_for_delivery',
+    -- Delivery
+    'delivered', 'delivery_failed', 'returned',
+    -- Post-delivery
+    'return_requested', 'return_approved', 'refunded',
+    -- Cancelled
+    'cancelled', 'on_hold'
+  ));
+
 
 -- ----------------------------------------------------------
 -- 3. ORDER_STATUS_HISTORY — full timeline with admin notes
