@@ -199,12 +199,12 @@ export function ChatWidget() {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 z-40 size-14 rounded-full bg-racing-red text-white grid place-items-center shadow-2xl shadow-racing-red/40 hover:scale-105 transition-transform"
+          className="fixed bottom-5 right-5 z-40 size-12 sm:size-13 rounded-full bg-hive text-white grid place-items-center shadow-lg shadow-hive/30 hover:scale-105 hover:bg-hive-dark transition-all"
           aria-label="Open chat"
         >
-          <MessageCircle className="size-6" />
+          <MessageCircle className="size-5 sm:size-6" />
           {totalUnread > 0 && (
-            <span className="absolute -top-1 -right-1 bg-white text-racing-red text-[10px] font-bold rounded-full size-5 grid place-items-center border-2 border-racing-red">
+            <span className="absolute -top-1 -right-1 bg-amber-hive text-ink text-[10px] font-bold rounded-full size-5 grid place-items-center border-2 border-background">
               {totalUnread}
             </span>
           )}
@@ -212,23 +212,23 @@ export function ChatWidget() {
       )}
 
       {open && (
-        <div className="fixed bottom-6 right-6 z-40 w-[380px] max-w-[calc(100vw-2rem)] h-[560px] max-h-[calc(100vh-3rem)] bg-background border border-border rounded-2xl shadow-2xl flex flex-col animate-fade-in overflow-hidden">
+        <div className="fixed bottom-5 right-5 z-40 w-[calc(100vw-2.5rem)] sm:w-[380px] max-w-[380px] h-[min(70vh,560px)] sm:h-[560px] sm:max-h-[calc(100vh-3rem)] bg-background border border-border rounded-2xl shadow-2xl flex flex-col animate-scale-in overflow-hidden">
           {/* Header */}
-          <div className="px-4 py-3 border-b border-border flex items-center justify-between bg-gradient-to-br from-graphite/80 to-onyx/60">
+          <div className="px-4 py-3 border-b border-border flex items-center justify-between bg-gradient-to-br from-hive/10 via-card to-amber-hive/5">
             <div className="flex items-center gap-2">
               {view !== "list" && (
-                <button onClick={() => { setView("list"); setActive(null); }} className="size-7 rounded-full hover:bg-secondary/40 grid place-items-center" aria-label="Back">
+                <button onClick={() => { setView("list"); setActive(null); }} className="size-7 rounded-full hover:bg-secondary grid place-items-center" aria-label="Back">
                   <ChevronLeft className="size-4" />
                 </button>
               )}
               <div>
-                <p className="text-[10px] uppercase tracking-[0.3em] text-racing-red font-bold">Help Center</p>
+                <p className="text-[10px] uppercase tracking-[0.3em] text-hive font-bold">Help Center</p>
                 <p className="text-sm font-semibold mt-0.5">
                   {view === "ticket" && active ? `${active.ticket_number}` : view === "newTicket" ? "New ticket" : "Your tickets"}
                 </p>
               </div>
             </div>
-            <button onClick={() => setOpen(false)} className="size-8 rounded-full hover:bg-secondary/40 grid place-items-center" aria-label="Close chat">
+            <button onClick={() => setOpen(false)} className="size-8 rounded-full hover:bg-secondary grid place-items-center" aria-label="Close chat">
               <X className="size-4" />
             </button>
           </div>
