@@ -1,0 +1,250 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Life Hive — modern multi-category e-commerce design system.
+ * Vibrant emerald + amber accents on a clean cream / dark theme.
+ * All colors in oklch.
+ */
+
+@theme inline {
+  --font-display: "Sora", sans-serif;
+  --font-sans: "Manrope", sans-serif;
+  --font-brand: "Plus Jakarta Sans", sans-serif;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-hive: var(--hive);
+  --color-hive-dark: var(--hive-dark);
+  --color-hive-soft: var(--hive-soft);
+  --color-amber-hive: var(--amber-hive);
+  --color-ink: var(--ink);
+  --color-cloud: var(--cloud);
+  --color-sky-hive: var(--sky-hive);
+
+  /* Backward-compat aliases — keep original routes working with new light theme */
+  --color-onyx: var(--background);
+  --color-graphite: var(--card);
+  --color-silver: var(--foreground);
+  --color-racing-red: var(--hive);
+
+  --shadow-glow: 0 0 50px -10px oklch(0.72 0.17 165 / 0.45);
+  --shadow-card: 0 16px 50px -18px oklch(0.18 0.04 240 / 0.18);
+  --shadow-soft: 0 6px 24px -10px oklch(0.18 0.04 240 / 0.14);
+}
+
+:root {
+  --radius: 0.875rem;
+
+  /* Light theme — bright airy commerce */
+  --hive: oklch(0.72 0.17 165);          /* emerald-500 */
+  --hive-dark: oklch(0.55 0.16 165);     /* emerald-700 */
+  --hive-soft: oklch(0.94 0.05 165);     /* mint cream */
+  --amber-hive: oklch(0.78 0.16 75);     /* amber-400 */
+  --ink: oklch(0.18 0.02 240);           /* near-black ink */
+  --cloud: oklch(0.97 0.005 240);        /* paper/cloud */
+  --sky-hive: oklch(0.62 0.18 230);      /* sky-blue accent */
+
+  --background: oklch(0.99 0.003 240);
+  --foreground: oklch(0.18 0.02 240);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.02 240);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.02 240);
+  --primary: oklch(0.72 0.17 165);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.96 0.01 240);
+  --secondary-foreground: oklch(0.22 0.02 240);
+  --muted: oklch(0.96 0.01 240);
+  --muted-foreground: oklch(0.5 0.01 240);
+  --accent: oklch(0.78 0.16 75);
+  --accent-foreground: oklch(0.18 0.02 240);
+  --destructive: oklch(0.58 0.22 25);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: oklch(0.9 0.01 240);
+  --input: oklch(0.92 0.01 240);
+  --ring: oklch(0.72 0.17 165);
+}
+
+.dark {
+  /* Dark premium variant (admin / night mode) */
+  --hive: oklch(0.72 0.17 165);
+  --hive-dark: oklch(0.45 0.13 165);
+  --hive-soft: oklch(0.25 0.04 165);
+  --amber-hive: oklch(0.78 0.16 75);
+  --ink: oklch(0.98 0 0);
+  --cloud: oklch(0.18 0.01 240);
+  --sky-hive: oklch(0.7 0.18 230);
+
+  --background: oklch(0.14 0.01 240);
+  --foreground: oklch(0.98 0 0);
+  --card: oklch(0.18 0.01 240);
+  --card-foreground: oklch(0.98 0 0);
+  --popover: oklch(0.18 0.01 240);
+  --popover-foreground: oklch(0.98 0 0);
+  --primary: oklch(0.72 0.17 165);
+  --primary-foreground: oklch(0.14 0.01 240);
+  --secondary: oklch(0.22 0.01 240);
+  --secondary-foreground: oklch(0.98 0 0);
+  --muted: oklch(0.22 0.01 240);
+  --muted-foreground: oklch(0.62 0.01 240);
+  --accent: oklch(0.78 0.16 75);
+  --accent-foreground: oklch(0.14 0.01 240);
+  --destructive: oklch(0.62 0.22 25);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: oklch(1 0 0 / 0.08);
+  --input: oklch(1 0 0 / 0.1);
+  --ring: oklch(0.72 0.17 165);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: var(--font-display);
+    letter-spacing: -0.018em;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  .font-brand {
+    font-family: var(--font-brand);
+  }
+
+  .glass {
+    background-color: oklch(1 0 0 / 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .glass-dark {
+    background-color: oklch(0.14 0.01 240 / 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .text-gradient-hive {
+    background: linear-gradient(120deg, var(--color-hive) 0%, var(--color-sky-hive) 50%, var(--color-hive) 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .text-gradient-amber {
+    background: linear-gradient(120deg, var(--color-amber-hive) 0%, var(--color-hive) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hover-glow {
+    transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+  }
+  .hover-glow:hover {
+    box-shadow: var(--shadow-glow);
+    border-color: oklch(0.72 0.17 165 / 0.4);
+  }
+
+  .card-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card);
+    border-color: oklch(0.72 0.17 165 / 0.35);
+  }
+
+  .bg-hive-pattern {
+    background-image:
+      radial-gradient(circle at 1px 1px, oklch(0.72 0.17 165 / 0.08) 1px, transparent 0);
+    background-size: 20px 20px;
+  }
+
+  .bg-mesh {
+    background-color: var(--color-background);
+    background-image:
+      radial-gradient(at 12% 18%, oklch(0.72 0.17 165 / 0.10) 0px, transparent 50%),
+      radial-gradient(at 88% 8%, oklch(0.78 0.16 75 / 0.10) 0px, transparent 50%),
+      radial-gradient(at 78% 92%, oklch(0.62 0.18 230 / 0.08) 0px, transparent 50%),
+      radial-gradient(at 8% 88%, oklch(0.72 0.17 165 / 0.08) 0px, transparent 50%);
+  }
+
+  .bg-mesh-dark {
+    background-color: oklch(0.14 0.01 240);
+    background-image:
+      radial-gradient(at 12% 18%, oklch(0.72 0.17 165 / 0.16) 0px, transparent 50%),
+      radial-gradient(at 88% 8%, oklch(0.78 0.16 75 / 0.14) 0px, transparent 50%),
+      radial-gradient(at 78% 92%, oklch(0.62 0.18 230 / 0.14) 0px, transparent 50%);
+  }
+
+  @keyframes float-slow {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(2deg); }
+  }
+  .animate-float-slow { animation: float-slow 6s ease-in-out infinite; }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  .animate-shimmer {
+    background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.2), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes scale-in {
+    from { transform: scale(0.6); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .animate-scale-in { animation: scale-in 0.25s ease-out; }
+
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+}
