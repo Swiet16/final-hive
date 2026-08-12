@@ -1,4 +1,4 @@
-import { CheckCircle2, AlertCircle, Flame, ShoppingCart, Eye, Star, Plus, Minus } from "lucide-react";
+import { CheckCircle2, AlertCircle, Flame, ShoppingCart, Eye, Star, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
@@ -26,7 +26,6 @@ export interface Product {
 export function ProductCard({ p }: { p: Product }) {
   const { add } = useCart();
   const [adding, setAdding] = useState(false);
-  const [qty, setQty] = useState(1);
 
   const showDiscount = !!(p.discountEnabled && p.originalPrice && p.originalPrice > p.price);
   const discountPct = showDiscount
@@ -41,7 +40,6 @@ export function ProductCard({ p }: { p: Product }) {
   const rating = p.rating ?? (4 + Math.floor(Math.random() * 10) / 10);
   const reviews = p.reviews ?? Math.floor(50 + Math.random() * 2000);
 
-  // If image_url is an emoji-style URL (we use emoji as fallback), display emoji instead.
   const isEmojiImage = p.image && /^[\p{Emoji}]+$/u.test(p.image.trim());
   const img = isEmojiImage ? p.image : (p.image && p.image.startsWith("http") ? p.image : null);
 
@@ -56,80 +54,80 @@ export function ProductCard({ p }: { p: Product }) {
       image: p.image,
     });
     toast.success(`${p.brand} ${p.name} added to cart`, {
-      description: `$${p.price.toFixed(2)} · ${qty} × item`,
+      description: `$${p.price.toFixed(2)} — view cart in header`,
     });
     setTimeout(() => setAdding(false), 900);
   }
 
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-2xl bg-card border border-border card-hover">
-      {/* Badges top-left */}
-      <div className="absolute top-3 left-3 z-20 flex flex-col gap-1.5">
-        {p.badge && (
-          <span className="bg-background/95 backdrop-blur text-foreground text-[10px] font-bold uppercase tracking-[0.12em] px-2.5 py-1 rounded-full border border-border">
-            {p.badge}
-          </span>
-        )}
-        {showDiscount && (
-          <span className="bg-racing-red text-white text-[10px] font-bold uppercase tracking-[0.08em] px-2.5 py-1 rounded-full flex items-center gap-1">
-            <Flame className="size-3" />
-            -{discountPct}%
-          </span>
-        )}
-      </div>
-
-      {/* Image area */}
+    <article className="group relative flex flex-col bg-card border border-border rounded-2xl overflow-hidden card-hover">
+      {/* Image area — fixed aspect ratio, no overlap with body */}
       {p.id ? (
         <Link
           to="/product/$id"
           params={{ id: p.id }}
-          className="block relative aspect-square bg-gradient-to-br from-secondary/60 to-background overflow-hidden"
+          className="block relative aspect-square bg-gradient-to-br from-secondary/60 to-background overflow-hidden shrink-0"
         >
           {img ? (
             <img
               src={img}
               alt={`${p.brand} ${p.name}`}
               loading="lazy"
-              className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300"
+              className="w-full h-full object-contain p-3 sm:p-4 group-hover:scale-105 transition-transform duration-300"
             />
           ) : (
-            <div className="w-full h-full grid place-items-center text-7xl sm:text-8xl group-hover:scale-105 transition-transform duration-300">
+            <div className="w-full h-full grid place-items-center text-6xl sm:text-7xl group-hover:scale-105 transition-transform duration-300">
               {isEmojiImage ? p.image : FALLBACK_EMOJI}
             </div>
           )}
 
+          {/* Top-left badges — absolute positioned, no overlap */}
+          <div className="absolute top-2 left-2 flex flex-col gap-1.5">
+            {p.badge && (
+              <span className="bg-background/95 backdrop-blur text-foreground text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.1em] px-2 py-1 rounded-full border border-border">
+                {p.badge}
+              </span>
+            )}
+            {showDiscount && (
+              <span className="bg-racing-red text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.08em] px-2 py-1 rounded-full flex items-center gap-0.5">
+                <Flame className="size-2.5 sm:size-3" />
+                -{discountPct}%
+              </span>
+            )}
+          </div>
+
           {p.stock === "low" && (
-            <div className="absolute bottom-2.5 left-2.5 bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/40 text-[10px] font-bold uppercase tracking-[0.15em] px-2.5 py-1 rounded-full">
+            <div className="absolute bottom-2 left-2 bg-amber-500/90 text-white text-[9px] font-bold uppercase tracking-wider px-2 py-1 rounded-full">
               Only a few left
             </div>
           )}
         </Link>
       ) : (
-        <div className="relative aspect-square bg-gradient-to-br from-secondary/60 to-background overflow-hidden">
+        <div className="relative aspect-square bg-gradient-to-br from-secondary/60 to-background overflow-hidden shrink-0">
           {img ? (
-            <img src={img} alt={`${p.brand} ${p.name}`} loading="lazy" className="w-full h-full object-contain p-3" />
+            <img src={img} alt={`${p.brand} ${p.name}`} loading="lazy" className="w-full h-full object-contain p-3 sm:p-4" />
           ) : (
-            <div className="w-full h-full grid place-items-center text-7xl sm:text-8xl">
+            <div className="w-full h-full grid place-items-center text-6xl sm:text-7xl">
               {isEmojiImage ? p.image : FALLBACK_EMOJI}
             </div>
           )}
         </div>
       )}
 
-      {/* Body */}
-      <div className="p-4 flex flex-col flex-1">
+      {/* Body — clearly separated from image */}
+      <div className="p-3 sm:p-4 flex flex-col flex-1 min-h-0">
         {/* Brand + rating */}
-        <div className="flex items-center justify-between mb-1.5">
-          <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-hive">{p.brand}</span>
-          <span className="flex items-center gap-1 text-[11px] font-medium">
-            <Star className="size-3 fill-amber-hive text-amber-hive" />
+        <div className="flex items-center justify-between gap-2 mb-1">
+          <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.15em] text-hive truncate">{p.brand}</span>
+          <span className="flex items-center gap-0.5 text-[10px] sm:text-[11px] font-medium shrink-0">
+            <Star className="size-2.5 sm:size-3 fill-amber-hive text-amber-hive" />
             {rating.toFixed(1)}
-            <span className="text-muted-foreground">({reviews > 1000 ? `${(reviews/1000).toFixed(1)}k` : reviews})</span>
+            <span className="text-muted-foreground hidden sm:inline">({reviews > 1000 ? `${(reviews/1000).toFixed(1)}k` : reviews})</span>
           </span>
         </div>
 
         {/* Name */}
-        <h3 className="font-semibold text-sm leading-snug line-clamp-2">
+        <h3 className="font-semibold text-xs sm:text-sm leading-snug line-clamp-2 min-h-[2.5rem] sm:min-h-[2.75rem]">
           {p.id ? (
             <Link to="/product/$id" params={{ id: p.id }} className="hover:text-hive transition-colors">
               {p.name}
@@ -138,45 +136,40 @@ export function ProductCard({ p }: { p: Product }) {
             <span>{p.name}</span>
           )}
         </h3>
-        {p.spec && <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{p.spec}</p>}
+        {p.spec && <p className="text-[11px] sm:text-xs text-muted-foreground mt-1 line-clamp-1">{p.spec}</p>}
 
-        {/* Price + stock */}
-        <div className="mt-3 flex items-end justify-between">
-          <div>
+        {/* Price + stock — stacked on mobile to avoid overlap */}
+        <div className="mt-2 sm:mt-3 flex items-baseline justify-between gap-2 flex-wrap">
+          <div className="min-w-0">
             {showDiscount && (
-              <span className="text-xs text-muted-foreground line-through mr-1.5">
+              <span className="text-[10px] sm:text-xs text-muted-foreground line-through mr-1.5 align-baseline">
                 ${p.originalPrice!.toFixed(2)}
               </span>
             )}
-            <span className={`text-xl font-bold tracking-tight ${showDiscount ? "text-racing-red" : "text-foreground"}`}>
+            <span className={`text-base sm:text-xl font-bold tracking-tight align-baseline ${showDiscount ? "text-racing-red" : "text-foreground"}`}>
               ${p.price.toFixed(2)}
             </span>
-            {showDiscount && (
-              <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-emerald-600 dark:text-emerald-400 mt-0.5">
-                Save ${savings.toFixed(2)}
-              </p>
-            )}
           </div>
           <div className="text-right">
-            <p className={`text-[10px] font-semibold flex items-center gap-1 justify-end ${stockColor}`}>
-              {p.stock === "in" ? <CheckCircle2 className="size-3" /> : <AlertCircle className="size-3" />}
+            <p className={`text-[9px] sm:text-[10px] font-semibold flex items-center gap-0.5 justify-end ${stockColor}`}>
+              {p.stock === "in" ? <CheckCircle2 className="size-2.5 sm:size-3" /> : <AlertCircle className="size-2.5 sm:size-3" />}
               {stockLabel}
             </p>
-            <p className="text-[10px] text-muted-foreground mt-0.5">${p.monthly}/mo</p>
+            <p className="text-[9px] sm:text-[10px] text-muted-foreground">${p.monthly}/mo</p>
           </div>
         </div>
 
-        {/* Actions */}
-        <div className="mt-4 grid grid-cols-[1fr_auto] gap-2 mt-auto">
+        {/* Actions — single column on mobile to avoid cramped buttons */}
+        <div className="mt-3 sm:mt-4 flex flex-col gap-2 mt-auto">
           <button
             onClick={handleAdd}
             disabled={soldOut}
-            className={`relative px-3 py-2.5 rounded-full text-[11px] font-bold uppercase tracking-[0.1em] flex items-center justify-center gap-1.5 transition-all ${
+            className={`w-full px-3 py-2 sm:py-2.5 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.1em] flex items-center justify-center gap-1.5 transition-all ${
               soldOut
                 ? "bg-secondary text-muted-foreground cursor-not-allowed"
                 : adding
                 ? "bg-emerald-500 text-white"
-                : "bg-hive text-white hover:bg-hive-dark hover:scale-[1.02] active:scale-[0.98]"
+                : "bg-hive text-white hover:bg-hive-dark hover:scale-[1.02] active:scale-[0.98] shadow-sm"
             }`}
           >
             {adding ? (
@@ -192,16 +185,16 @@ export function ProductCard({ p }: { p: Product }) {
             )}
           </button>
 
-          {p.id ? (
+          {p.id && (
             <Link
               to="/product/$id"
               params={{ id: p.id }}
-              className="grid place-items-center w-10 rounded-full border border-border text-muted-foreground hover:text-hive hover:border-hive/40 transition-colors"
+              className="w-full px-3 py-2 rounded-full text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.1em] flex items-center justify-center gap-1.5 border border-border text-muted-foreground hover:text-hive hover:border-hive/40 transition-colors"
               aria-label="View details"
             >
-              <Eye className="size-4" />
+              <Eye className="size-3.5" /> View Details
             </Link>
-          ) : null}
+          )}
         </div>
       </div>
     </article>
